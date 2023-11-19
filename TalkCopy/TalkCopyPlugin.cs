@@ -63,6 +63,7 @@ public sealed class TalkCopyPlugin : IDalamudPlugin
 
     public void Dispose()
     {
-        PluginHandlers.PluginInterface.UiBuilder.Draw += windowSystem.Draw;
+        PluginHandlers.PluginInterface.UiBuilder.Draw -= windowSystem.Draw;
+        windowSystem.RemoveAllWindows();
     }
 }
