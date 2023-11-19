@@ -1,0 +1,13 @@
+{
+    "Author": "Glyceri",
+    "Name": "Talk Copy",
+    "Punchline": "Automatically copies messages from the Talk Box to your clipboard.",
+    "Description": "Automatically copies messages from the Talk Box to your clipboard.",
+    "InternalName": "TalkCopy",
+    "ApplicableVersion": "any",
+    "Tags": [
+        "plugin",
+        "talk",
+        "copy"
+    ]
+}
