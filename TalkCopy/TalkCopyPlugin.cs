@@ -14,11 +14,13 @@ public sealed class TalkCopyPlugin : IDalamudPlugin
 {
     internal Configuration config;
     WindowSystem windowSystem;
-    public TalkCopyPlugin([RequiredVersion("1.0")] DalamudPluginInterface pluginInterface)
+
+    public TalkCopyPlugin(
+        [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface)
     {
         PluginHandlers.Start(ref pluginInterface, this);
         PluginHandlers.AddonLifecycle.RegisterListener(AddonEvent.PreUpdate, "Talk", OnTalk);
-        windowSystem = new WindowSystem("Talk Copy");
+        windowSystem = new WindowSystem("Dialog Copy");
         config = PluginHandlers.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         pluginInterface.UiBuilder.Draw += windowSystem.Draw;
         SettingsWindow window = new SettingsWindow();
@@ -50,7 +52,7 @@ public sealed class TalkCopyPlugin : IDalamudPlugin
             BaseNode bNode = new BaseNode((AtkUnitBase*)args.Addon);
             if (bNode == null) return;
             AtkTextNode* textNode = bNode.GetNode<AtkTextNode>(3);
-            if(textNode == null) return;
+            if (textNode == null) return;
             string text = textNode->NodeText.ToString();
             if (lastText != text)
             {
