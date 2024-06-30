@@ -1,4 +1,3 @@
-using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
 using Dalamud.Game.Addon.Lifecycle;
@@ -15,8 +14,7 @@ public sealed class TalkCopyPlugin : IDalamudPlugin
     internal Configuration config;
     WindowSystem windowSystem;
 
-    public TalkCopyPlugin(
-        [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface)
+    public TalkCopyPlugin(IDalamudPluginInterface pluginInterface)
     {
         PluginHandlers.Start(ref pluginInterface, this);
         PluginHandlers.AddonLifecycle.RegisterListener(AddonEvent.PreUpdate, "Talk", OnTalk);
