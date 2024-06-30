@@ -13,13 +13,6 @@
     <IsPackable>false</IsPackable>
     <RepositoryUrl>https://github.com/Glyceri/TalkCopy</RepositoryUrl>
     <Title>Dialogue Copy</Title>
-    <PackageIcon>icon.png</PackageIcon>
+    <PackageIcon></PackageIcon>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\res\icon.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
 </Project>
