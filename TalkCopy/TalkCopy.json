@@ -1,8 +1,8 @@
 {
     "Author": "Glyceri",
     "Name": "Dialog Copy",
-    "Punchline": "Automatically copies messages from the Dialog Box to your clipboard.",
-    "Description": "Automatically copies messages from the Dialog Box to your clipboard.",
+    "Punchline": "Automatically copies messages from the Dialog Box and many more to your clipboard.",
+    "Description": "Automatically copies messages from the Dialog Box and many more to your clipboard.",
     "InternalName": "TalkCopy",
     "ApplicableVersion": "any",
     "Tags": [
