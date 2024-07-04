@@ -15,7 +15,7 @@ internal static class CopyHandler
         PluginHandlers.PluginLog.Verbose("Addon: " + Addon + " wants to copy the text: " + Text);
         CopyData.Add(new CopyData(DateTime.Now, Addon, Text, Block));
         if (CopyData.Count > 100) CopyData.RemoveAt(0);
-        ImGui.SetClipboardText(Text);
+        if(!Block) ImGui.SetClipboardText(Text);
     }
 }
 
