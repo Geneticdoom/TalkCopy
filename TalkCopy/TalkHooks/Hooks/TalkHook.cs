@@ -11,7 +11,7 @@ internal unsafe class TalkHook : TalkHookBase
 {
     public TalkHook() : base("Talk") { }
 
-    public override void OnPreUpdate(BaseNode baseNode) => ExtractText(baseNode.GetNode<AtkTextNode>(3));
+    public override void OnPreUpdate(BaseNode baseNode, ushort ID) => ExtractText(baseNode.GetNode<AtkTextNode>(3), ID);
 
     public override bool CanCopy() => PluginHandlers.Plugin.Config.CopyDialogBoxText;
 }

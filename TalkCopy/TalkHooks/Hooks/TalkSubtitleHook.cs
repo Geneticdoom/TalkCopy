@@ -11,7 +11,7 @@ internal unsafe class TalkSubtitleHook : TalkHookBase
 {
     public TalkSubtitleHook() : base("TalkSubtitle") { }
 
-    public override void OnPreUpdate(BaseNode baseNode) => ExtractText(baseNode.GetNode<AtkTextNode>(2));
+    public override void OnPreUpdate(BaseNode baseNode, ushort ID) => ExtractText(baseNode.GetNode<AtkTextNode>(2), ID);
 
     public override bool CanCopy() => PluginHandlers.Plugin.Config.CopySubtitles;
 }

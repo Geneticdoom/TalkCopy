@@ -11,7 +11,7 @@ internal unsafe class BattleTalkHook : TalkHookBase
 {
     public BattleTalkHook() : base("_BattleTalk") { }
 
-    public override void OnPreUpdate(BaseNode baseNode) => ExtractText(baseNode.GetNode<AtkTextNode>(6));
+    public override void OnPreUpdate(BaseNode baseNode, ushort ID) => ExtractText(baseNode.GetNode<AtkTextNode>(6), ID);
 
     public override bool CanCopy() => PluginHandlers.Plugin.Config.CopyBattleTalk;
 }
