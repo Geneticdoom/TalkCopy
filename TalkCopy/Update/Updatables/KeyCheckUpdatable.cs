@@ -1,5 +1,6 @@
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Plugin.Services;
+using ImGuizmoNET;
 using TalkCopy.Attributes;
 using TalkCopy.Core.Handlers;
 
@@ -9,7 +10,7 @@ namespace TalkCopy.Update.Updatables;
 internal class KeyCheckUpdatable : UpdatableElement
 {
     bool hasLetGo = true;
-    bool mode = true;
+    bool defaultMode = true;
 
     public override void Update(IFramework framework)
     {
@@ -48,17 +49,19 @@ internal class KeyCheckUpdatable : UpdatableElement
         {
             if (toggleMode && hasLetGo)
             {
-                mode = !mode;
+                defaultMode = !defaultMode;
             }
             hasLetGo = false;
         }
 
         if (!toggleMode)
         {
-            mode = hasLetGo;
+            defaultMode = hasLetGo;
         }
 
-        TalkCopyPlugin.CurrentMode = mode ? PluginMode.Default : PluginMode.TextCopy;
+        if (PluginHandlers.ClientState.IsPvPExcludingDen) defaultMode = true;
+
+        TalkCopyPlugin.CurrentMode = defaultMode ? PluginMode.Default : PluginMode.TextCopy;
     }
 
     void UnsetKey(VirtualKey key)

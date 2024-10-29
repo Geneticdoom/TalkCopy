@@ -1,14 +1,16 @@
 {
     "Author": "Glyceri",
     "Name": "Dialog Copy",
-    "Punchline": "Automatically copy ANY text on your screen by choise.",
-    "Description": "Automatically copy ANY text on your screen.\n\nThere are two modes:\n        -Normal Mode: Automatically Copies a select number of text elements to your clipboard.\n        -Text Copy Mode: This mode allows you to copy the text of ANY text element on the screen.\n\nDefault keybinds to toggle between the two modes are:\n      [Left Control] [Left Shift] [Spacebar]",
+    "Punchline": "Automatically copy ANY text on your screen by choice.",
+    "Description": "Automatically copy ANY text on your screen.\n\nThere are two modes:\n        -Normal Mode: Automatically copies a select number of text elements to your clipboard.\n        -Text Copy Mode: This mode allows you to copy the text of ANY text element on the screen.\n\nDefault keybinds to toggle between the two modes are:\n      [Left Control] [Left Shift] [Spacebar]",
     "InternalName": "TalkCopy",
     "ApplicableVersion": "any",
     "Tags": [
         "plugin",
         "talk",
         "copy",
-        "dailog"
+        "dailog",
+        "text",
+        "clipboard"
     ]
 }
