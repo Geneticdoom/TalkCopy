@@ -1,7 +1,6 @@
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using System;
-using System.Xml.Serialization;
 using TalkCopy.Core.Handlers;
 
 namespace TalkCopy.Windows;

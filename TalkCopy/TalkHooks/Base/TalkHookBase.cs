@@ -5,10 +5,12 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Text.ReadOnly;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using TalkCopy.Copying;
 using TalkCopy.Core.Handlers;
 using TalkCopy.Core.Hooking;
 using TalkCopy.TalkHooks.Interfaces;
+using static FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.VertexShader;
 
 namespace TalkCopy.TalkHooks.Base;
 
@@ -61,6 +63,11 @@ internal unsafe abstract class TalkHookBase : ITalkHook
         catch
         {
             currentText = textNode->NodeText.ToString();
+        }
+
+        if (PluginHandlers.Plugin.Config.ParseOutBrackets) 
+        {
+            currentText = Regex.Replace(currentText, "<.*?>", "");
         }
 
         return currentText ?? string.Empty;

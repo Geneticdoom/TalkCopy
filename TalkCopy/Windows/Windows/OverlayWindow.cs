@@ -1,3 +1,4 @@
+using Dalamud.Game.ClientState.Keys;
 using Dalamud.Interface.Utility;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -5,6 +6,7 @@ using ImGuiNET;
 using System.Numerics;
 using TalkCopy.Attributes;
 using TalkCopy.Copying;
+using TalkCopy.Core.Handlers;
 using TalkCopy.TalkHooks.Base;
 
 namespace TalkCopy.Windows.Windows;
@@ -75,6 +77,7 @@ internal unsafe class OverlayWindow : TalkWindow
 
     void DrawWantsToCopy()
     {
+        if (!PluginHandlers.Plugin.Config.ShowTooltip) return;
         if (wantsToCopy.IsNullOrWhitespace()) return;
 
         ImGui.SetWindowFontScale(1);
@@ -109,10 +112,16 @@ internal unsafe class OverlayWindow : TalkWindow
     {
         ImGui.SetWindowFontScale(1.3f);
 
-        string LABEL = "                                        [Dialog Copy]\n                       [TEXT COPY MODE ACTIVE]\n\nThis mode shows every visible text element.\nUpon hovering over one the text gets copied.";
+        string LABEL = "                                        [Dialog Copy]\n" +
+            "                       [TEXT COPY MODE ACTIVE]\n\n" +
+            "This mode shows every visible text element.\n" +
+            "Upon hovering over one the text gets copied.\n\n" +
+            "Keybinds:\n" +
+            $"[{PluginHandlers.Plugin.Config.ComboModifier.GetFancyName()}] [{PluginHandlers.Plugin.Config.ComboModifier2.GetFancyName()}] [{PluginHandlers.Plugin.Config.ComboKey.GetFancyName()}]\n" +
+            $"(Can be changed via: '/dialogcopy settings')";
 
         Vector2 rectOffset = new Vector2(10, 10);
-        Vector2 textSize = ImGui.CalcTextSize(LABEL);
+        Vector2 textSize = ImGui.CalcTextSize(LABEL, false);
         Vector2 halfTextSize = textSize * 0.5f;
 
         Vector2 centre = ImGuiHelpers.MainViewport.GetCenter();
@@ -121,9 +130,16 @@ internal unsafe class OverlayWindow : TalkWindow
 
         ImDrawListPtr foregroundPointer = ImGui.GetForegroundDrawList(ImGuiHelpers.MainViewport);
 
-        foregroundPointer.AddRectFilled(centre - rectOffset, centre + textSize + rectOffset, 0xFF000000);
-        foregroundPointer.AddText(ImGui.GetFont(), ImGui.GetFontSize(), centre, 0xFF0000FF, LABEL);
-        foregroundPointer.AddRect(Vector2.Zero, ImGuiHelpers.MainViewport.WorkSize, 0xFF0000FF, 0, ImDrawFlags.None, 15);
+        if (PluginHandlers.Plugin.Config.ShowWarningText)
+        {
+            foregroundPointer.AddRectFilled(centre - rectOffset, centre + textSize + rectOffset, 0xFF000000);
+            foregroundPointer.AddText(ImGui.GetFont(), ImGui.GetFontSize(), centre, 0xFF0000FF, LABEL);
+        }
+
+        if (PluginHandlers.Plugin.Config.ShowWarningOutline)
+        {
+            foregroundPointer.AddRect(Vector2.Zero, ImGuiHelpers.MainViewport.WorkSize, 0xFF0000FF, 0, ImDrawFlags.None, 15);
+        }
     }
 
     void DrawBaseNode(AtkUnitList* unitList)
@@ -258,6 +274,11 @@ internal unsafe class OverlayWindow : TalkWindow
                          mousepos.X < max.X &&
                          mousepos.Y > min.Y &&
                          mousepos.Y < max.Y;
+
+        if (Input.Disabled)
+        {
+            isHovered = false;
+        }
 
         if (isHovered)
         {

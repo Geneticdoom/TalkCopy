@@ -16,14 +16,27 @@ internal class ToggleCommand : CommandBase
     {
         ref bool Toggle = ref PluginHandlers.Plugin.Config.CopyAnyText;
 
-        if (args == string.Empty || args == null) Toggle = !Toggle;
-        else if (args.ToLower() == "logs") { PluginHandlers.Plugin.WindowHandler.ToggleWindow<CopyLogWindow>(); return; }
-        else if (args.ToLower() == "settings") { PluginHandlers.Plugin.WindowHandler.ToggleWindow<SettingsWindow>(); return; }
-        else if (args.ToLower() == "true") Toggle = true;
-        else if (args.ToLower() == "false") Toggle = false;
+        string argsLower = args?.ToLower() ?? string.Empty;
+
+        if (argsLower == string.Empty) Toggle = !Toggle;
+        else if (argsLower == "logs") { PluginHandlers.Plugin.WindowHandler.ToggleWindow<CopyLogWindow>(); return; }
+        else if (argsLower == "settings") { PluginHandlers.Plugin.WindowHandler.ToggleWindow<SettingsWindow>(); return; }
+        else if (argsLower == "true") Toggle = true;
+        else if (argsLower == "false") Toggle = false;
+        else if (argsLower == "help")
+        {
+            PluginHandlers.ChatGui.Print($"DialogCopy Help Section");
+            PluginHandlers.ChatGui.Print(string.Empty);
+            PluginHandlers.ChatGui.Print($"You can use the following arguments:");
+            PluginHandlers.ChatGui.Print($"    [logs]       (this opens the logs window)");
+            PluginHandlers.ChatGui.Print($"    [settings]   (this opens the settings window)");
+            PluginHandlers.ChatGui.Print($"    [false]      (this disables automatic text copy)");
+            PluginHandlers.ChatGui.Print($"    [true]       (this enables automatic text copy)");
+            return;
+        }
         else
         {
-            PluginHandlers.ChatGui.Print($"The arguments: '{args}' were not recognised by Dialog Copy.");
+            PluginHandlers.ChatGui.Print($"The argument: '{args}' is not recognised by Dialog Copy.");
             return;
         }
 

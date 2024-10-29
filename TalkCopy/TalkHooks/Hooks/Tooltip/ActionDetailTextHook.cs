@@ -45,7 +45,7 @@ internal unsafe class ActionDetailTextHook : BaseTooltipTextHook
             $"{talentText}   {rangeTitle} {rangeValue}   {radiusTitle} {radiusvalue}\n" +
             $"{activationTitle}     {reactivationTitle}\n" +
             $"{activationvalue}     {reactivationValue}\n" +
-            $"---------------------------\n" +
+            $"\n" +
             $"{mainText}\n" +
             $"\n" +
             $"{learnedAtTitle} {learnedAtValue}\n" +
