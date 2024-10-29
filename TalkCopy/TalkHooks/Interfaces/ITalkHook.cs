@@ -8,8 +8,9 @@ namespace TalkCopy.TalkHooks.Interfaces;
 internal unsafe interface ITalkHook
 {
     string AddonName { get; }
-    void OnPreUpdate(BaseNode baseNode, ushort ID);
+    void OnPreUpdate(BaseNode baseNode);
     void OnTalk(AddonEvent type, AddonArgs args);
     bool CanCopy();
-    void ExtractText(AtkTextNode* textNode, ushort ID);
+    string? ExtractText(AtkTextNode* textNode);
+    void CopyText(string? text);
 }

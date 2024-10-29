@@ -25,6 +25,9 @@ internal class SettingsWindow : TalkWindow
 
         if (!PluginHandlers.Plugin.Config.CopyAnyText) ImGui.BeginDisabled();
 
+        if (ImGui.Checkbox("Copy Text from Tooltips?", ref PluginHandlers.Plugin.Config.CopyTooltips))
+            PluginHandlers.Plugin.Config.Save();
+
         if (ImGui.Checkbox("Copy Text from the Dialog Box?", ref PluginHandlers.Plugin.Config.CopyDialogBoxText))
             PluginHandlers.Plugin.Config.Save();
 

@@ -21,6 +21,11 @@ internal class ToggleCommand : CommandBase
         else if (args.ToLower() == "settings") { PluginHandlers.Plugin.WindowHandler.ToggleWindow<SettingsWindow>(); return; }
         else if (args.ToLower() == "true") Toggle = true;
         else if (args.ToLower() == "false") Toggle = false;
+        else
+        {
+            PluginHandlers.ChatGui.Print($"The arguments: '{args}' were not recognised by Dialog Copy.");
+            return;
+        }
 
         PluginHandlers.Plugin.Config.Save();
 

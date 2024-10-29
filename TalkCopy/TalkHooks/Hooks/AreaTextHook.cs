@@ -11,11 +11,13 @@ internal unsafe class AreaTextHook : TalkHookBase
 {
     public AreaTextHook() : base("_AreaText") { }
 
-    public override void OnPreUpdate(BaseNode baseNode, ushort ID)
+    public override void OnPreUpdate(BaseNode baseNode)
     {
         ComponentNode componentNode = baseNode.GetComponentNode(2);
         if (componentNode == null) { PluginHandlers.PluginLog.Error("Comonent node null!"); return; }
-        ExtractText(componentNode.GetNode<AtkTextNode>(2), ID);
+
+        string? text = ExtractText(componentNode.GetNode<AtkTextNode>(2));
+        CopyText(text);
     }
 
     public override bool CanCopy() => PluginHandlers.Plugin.Config.CopyAreaText;

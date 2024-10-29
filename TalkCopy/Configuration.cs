@@ -13,6 +13,7 @@ internal class Configuration : IPluginConfiguration
     public bool CopyToastText = true;
     public bool CopyAreaText = true;
     public bool CopySubtitles = true;
+    public bool CopyTooltips = true;
 
     public bool CopyAnyText = true;
     public bool hour24 = true;

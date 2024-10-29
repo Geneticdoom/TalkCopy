@@ -10,6 +10,8 @@ public sealed class TalkCopyPlugin : IDalamudPlugin
     internal Configuration Config { get; private set; }
     internal WindowHandler WindowHandler { get; private set; }
 
+    public static PluginMode CurrentMode = PluginMode.Default;
+
     public TalkCopyPlugin(IDalamudPluginInterface pluginInterface)
     {
         PluginHandlers.Start(ref pluginInterface, this);
@@ -22,4 +24,10 @@ public sealed class TalkCopyPlugin : IDalamudPlugin
     {
         WindowHandler?.Dispose();
     }
+}
+
+public enum PluginMode
+{
+    Default,
+    TextCopy
 }
