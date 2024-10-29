@@ -47,6 +47,11 @@ internal unsafe abstract class TalkHookBase : ITalkHook
         if (textNode == null) return null;
         if (!textNode->IsVisible()) return null;
 
+        return GetDecodedText(textNode);
+    }
+
+    public static string GetDecodedText(AtkTextNode* textNode)
+    {
         string currentText = string.Empty;
 
         try
@@ -58,7 +63,7 @@ internal unsafe abstract class TalkHookBase : ITalkHook
             currentText = textNode->NodeText.ToString();
         }
 
-        return currentText;
+        return currentText ?? string.Empty;
     }
 
     public void CopyText(string? text)
