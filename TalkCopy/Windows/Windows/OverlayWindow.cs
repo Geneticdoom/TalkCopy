@@ -209,22 +209,6 @@ internal unsafe class OverlayWindow : TalkWindow
         }
     }
 
-    private Vector2 GetNodePosition(AtkResNode* node)
-    {
-        var pos = new Vector2(node->X, node->Y);
-        pos -= new Vector2(node->OriginX * (node->ScaleX - 1), node->OriginY * (node->ScaleY - 1));
-        var par = node->ParentNode;
-        while (par != null)
-        {
-            pos *= new Vector2(par->ScaleX, par->ScaleY);
-            pos += new Vector2(par->X, par->Y);
-            pos -= new Vector2(par->OriginX * (par->ScaleX - 1), par->OriginY * (par->ScaleY - 1));
-            par = par->ParentNode;
-        }
-
-        return pos;
-    }
-
     Vector2 GetNodeScale(AtkResNode* node)
     {
         if (node == null) return new Vector2(1, 1);
@@ -256,14 +240,19 @@ internal unsafe class OverlayWindow : TalkWindow
         AtkTextNode* textNode = node->GetAsAtkTextNode();
         if (textNode->NodeText.Length == 0) return;
 
-        Vector2 position = GetNodePosition(node);
-        Vector2 scale = GetNodeScale(node);
-        Vector2 size = new Vector2(node->Width, node->Height) * scale;
-
         bool nodeVisible = GetNodeVisible(node);
         if (!nodeVisible) return;
 
-        position += ImGuiHelpers.MainViewport.Pos;
+        ushort textWidth, textHeight;
+        textNode->GetTextDrawSize(&textWidth, &textHeight);
+
+        float oversizedBase = 5;
+        Vector2 oversizedScale = new Vector2(oversizedBase, oversizedBase);
+
+        Vector2 scale = GetNodeScale(node);
+        Vector2 rawSize = new Vector2(textWidth, textHeight);
+        Vector2 size = rawSize * scale + oversizedScale;
+        Vector2 position = GetTextNodeScreenPosition(textNode, rawSize) - (oversizedScale * 0.5f);
 
         Vector2 mousepos = ImGui.GetMousePos();
 
@@ -285,6 +274,40 @@ internal unsafe class OverlayWindow : TalkWindow
             wantsToCopy = TalkHookBase.GetDecodedText(textNode);
         }
 
-        ImGui.GetForegroundDrawList(ImGuiHelpers.MainViewport).AddRect(position, max, isHovered ? 0xFF00FF00 : 0xFF999999, 5, ImDrawFlags.RoundCornersAll, 2);
+        ImGui.GetForegroundDrawList(ImGuiHelpers.MainViewport).AddRect(position, max, isHovered ? 0xFF00FF00 : 0xFFFFFF00, 1, ImDrawFlags.RoundCornersAll, 1);
+    }
+
+    Vector2 GetTextNodeScreenPosition(AtkTextNode* textNode, Vector2 rawTextSize)
+    {
+        Vector2 finalPos;
+
+        Vector2 nodeScreenPos = new Vector2(textNode->ScreenX, textNode->ScreenY);
+        Vector2 nodeScale = GetNodeScale(&textNode->AtkResNode);
+        Vector2 nodeSize = new Vector2(textNode->Width * nodeScale.X, textNode->Height * nodeScale.Y);
+        Vector2 nodeSizeHalf = nodeSize * 0.5f;
+        Vector2 nodeCentrePos = nodeScreenPos + nodeSizeHalf;
+        Vector2 scaledTextSize = rawTextSize * nodeScale;
+
+        finalPos = nodeCentrePos;
+
+        AlignmentType aType = textNode->AlignmentType;
+
+        int aTypeInt = (int)aType;
+        if (aTypeInt < 0 || aTypeInt > (int)AlignmentType.BottomRight) return finalPos;
+
+        switch (aType)
+        {
+            case AlignmentType.TopLeft:     finalPos -= nodeSizeHalf;                                                                                                           break;
+            case AlignmentType.Top:         finalPos -= new Vector2(scaledTextSize.X * 0.5f, 0)                         - new Vector2(0, -nodeSizeHalf.Y);                      break;
+            case AlignmentType.TopRight:    finalPos -= new Vector2(scaledTextSize.X, 0)                                - new Vector2(nodeSizeHalf.X, -nodeSizeHalf.Y);         break;
+            case AlignmentType.Left:        finalPos -= new Vector2(0, scaledTextSize.Y * 0.5f)                         - new Vector2(-nodeSizeHalf.X, 0);                      break;
+            case AlignmentType.Center:      finalPos -= new Vector2(scaledTextSize.X * 0.5f, scaledTextSize.Y * 0.5f);                                                          break;
+            case AlignmentType.Right:       finalPos -= new Vector2(scaledTextSize.X, scaledTextSize.Y * 0.5f)          - new Vector2(nodeSizeHalf.X, 0);                       break;
+            case AlignmentType.BottomLeft:  finalPos -= new Vector2(0, scaledTextSize.Y)                                - new Vector2(-nodeSizeHalf.X, nodeSizeHalf.Y);         break;
+            case AlignmentType.Bottom:      finalPos -= new Vector2(scaledTextSize.X * 0.5f, scaledTextSize.Y)          - new Vector2(0, nodeSizeHalf.Y);                       break;
+            case AlignmentType.BottomRight: finalPos -= new Vector2(scaledTextSize.X, scaledTextSize.Y)                 - nodeSizeHalf;                                         break;
+        }
+
+        return finalPos;
     }
 }
