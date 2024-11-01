@@ -36,6 +36,9 @@ internal class SettingsWindow : TalkWindow
         {
             if (!PluginHandlers.Plugin.Config.CopyAnyText) ImGui.BeginDisabled();
 
+            if (ImGui.Checkbox("Try Copy Lists?", ref PluginHandlers.Plugin.Config.TryCopyLists))
+                PluginHandlers.Plugin.Config.Save();
+
             if (ImGui.Checkbox("Copy Text from Tooltips?", ref PluginHandlers.Plugin.Config.CopyTooltips))
                 PluginHandlers.Plugin.Config.Save();
 

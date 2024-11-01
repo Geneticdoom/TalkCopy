@@ -10,7 +10,6 @@ using TalkCopy.Copying;
 using TalkCopy.Core.Handlers;
 using TalkCopy.Core.Hooking;
 using TalkCopy.TalkHooks.Interfaces;
-using static FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.VertexShader;
 
 namespace TalkCopy.TalkHooks.Base;
 

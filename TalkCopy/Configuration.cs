@@ -9,6 +9,7 @@ internal class Configuration : IPluginConfiguration
 
     public bool ParseOutBrackets = false;
 
+    public bool TryCopyLists = true;
     public bool CopyDialogBoxText = true;
     public bool CopyErrorBoxText = true;
     public bool CopyBattleTalk = true;

@@ -17,6 +17,7 @@ internal class PluginHandlers
     [PluginService] internal static IClientState ClientState { get; private set; } = null!;
     [PluginService] internal static IKeyState KeyState { get; private set; } = null!;
     internal static Input Input { get; private set; } = new Input();
+    internal static Utils Utils { get; private set; } = new Utils();
 
     internal static void Start(ref IDalamudPluginInterface plugin, TalkCopyPlugin selfPlugin)
     {

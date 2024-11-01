@@ -7,6 +7,7 @@ using System.Numerics;
 using TalkCopy.Attributes;
 using TalkCopy.Copying;
 using TalkCopy.Core.Handlers;
+using TalkCopy.Core.Hooking;
 using TalkCopy.TalkHooks.Base;
 
 namespace TalkCopy.Windows.Windows;
@@ -165,48 +166,20 @@ internal unsafe class OverlayWindow : TalkWindow
         if (unitBase->RootNode == null) return;
         if (unitBase->UldManager.NodeListCount <= 0) return;
 
-        DrawResNode(unitBase->RootNode, true);
+        DrawResNode(unitBase->RootNode);
 
         for (int i = 0; i < unitBase->UldManager.NodeListCount; i++)
         {
             AtkResNode* baseNode = unitBase->UldManager.NodeList[i];
             if (baseNode == null) continue;
 
-            DrawResNode(baseNode, true);
+            DrawResNode(baseNode);
         }
     }
 
-    void DrawResNode(AtkResNode* node, bool printSiblings = false)
+    void DrawResNode(AtkResNode* node)
     {
-        if (node == null) return;
-
-        if (node->Type == NodeType.Text)
-        {
-            DrawOutline(node);
-        }
-
-        AtkResNode* prevNode = node;
-        while ((prevNode = prevNode->PrevSiblingNode) != null)
-        {
-            if (printSiblings) DrawResNode(prevNode);
-        }
-
-        AtkResNode* nextNode = node;
-        while ((nextNode = nextNode->NextSiblingNode) != null)
-        {
-            if (printSiblings) DrawResNode(nextNode);
-        }
-
-        if ((int)node->Type < 1000) 
-        { 
-            DrawResNode(node->ChildNode, true); 
-        }
-        else
-        {
-            AtkComponentNode* compNode = (AtkComponentNode*)node;
-            AtkUldManager componentInfo = compNode->Component->UldManager;
-            DrawResNode(componentInfo.RootNode, true);
-        }
+        PluginHandlers.Utils.FindNodeOfType((int)NodeType.Text, (addon) => DrawOutline((AtkResNode*)addon),false, node, true);
     }
 
     Vector2 GetNodeScale(AtkResNode* node)
