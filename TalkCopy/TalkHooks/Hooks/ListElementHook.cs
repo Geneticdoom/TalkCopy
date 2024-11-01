@@ -41,9 +41,6 @@ internal unsafe class ListElementHook
 
     string lastAddon = string.Empty;
 
-    // type 1006 is a ComponentList
-    // type 1004 is a ComponentListElement or w/e
-
     void OnPostSetup(AddonEvent type, AddonArgs args)
     {
         string addonName = args.AddonName;
