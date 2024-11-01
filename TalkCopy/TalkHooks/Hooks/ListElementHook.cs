@@ -4,7 +4,6 @@ using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Collections.Generic;
-using System.Linq;
 using TalkCopy.Attributes;
 using TalkCopy.Copying;
 using TalkCopy.Core.Handlers;
@@ -13,6 +12,7 @@ using static FFXIVClientStructs.FFXIV.Component.GUI.AtkComponentList;
 
 namespace TalkCopy.TalkHooks.Hooks;
 
+// wtf is this class?????????????????? I write spaghetti c:
 [Active]
 internal unsafe class ListElementHook
 {
@@ -27,26 +27,24 @@ internal unsafe class ListElementHook
 
     public ListElementHook()
     {
-        PluginHandlers.AddonLifecycle.RegisterListener(AddonEvent.PostReceiveEvent, OnPostSetup);
-        PluginHandlers.AddonLifecycle.RegisterListener(AddonEvent.PostRefresh, OnPostSetup);
-        PluginHandlers.AddonLifecycle.RegisterListener(AddonEvent.PostSetup, OnPostSetup);
+        foreach (string addon in allowed)
+        {
+            PluginHandlers.AddonLifecycle.RegisterListener(AddonEvent.PostReceiveEvent, addon, OnPostSetup);
+            PluginHandlers.AddonLifecycle.RegisterListener(AddonEvent.PostRefresh, addon, OnPostSetup);
+            PluginHandlers.AddonLifecycle.RegisterListener(AddonEvent.PostSetup, addon, OnPostSetup);
+        }
     }
 
     ~ListElementHook()
     {
-        PluginHandlers.AddonLifecycle.UnregisterListener(AddonEvent.PostReceiveEvent, OnPostSetup);
-        PluginHandlers.AddonLifecycle.UnregisterListener(AddonEvent.PostRefresh, OnPostSetup);
-        PluginHandlers.AddonLifecycle.UnregisterListener(AddonEvent.PostSetup, OnPostSetup);
+        PluginHandlers.AddonLifecycle.UnregisterListener(OnPostSetup);
     }
 
     string lastAddon = string.Empty;
 
     void OnPostSetup(AddonEvent type, AddonArgs args)
     {
-        string addonName = args.AddonName;
-        if (!allowed.Contains(addonName)) return;
-
-        lastAddon = addonName;
+        lastAddon = args.AddonName;
 
         AtkUnitBase* atkUnitBase = (AtkUnitBase*)args.Addon;
         if (atkUnitBase == null) return;
