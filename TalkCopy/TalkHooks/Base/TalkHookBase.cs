@@ -57,7 +57,7 @@ internal unsafe abstract class TalkHookBase : ITalkHook
 
         try
         {
-            currentText = new ReadOnlySeStringSpan(textNode->NodeText.StringPtr).ToString();
+            currentText = new ReadOnlySeStringSpan((byte*)textNode->NodeText.StringPtr).ExtractText();
         }
         catch
         {

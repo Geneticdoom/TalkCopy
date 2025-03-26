@@ -68,7 +68,7 @@ internal unsafe class ListElementHook
         for (int i = 0; i < listLength; i++)
         {
             ListItem listItem = list->ItemRendererList[i];
-            SeString seString = SeString.Parse(listItem.Label);
+            SeString seString = SeString.Parse((byte*)listItem.Label);
             if (seString.Payloads.Count != 0)
             {
                 strings.Add(seString.TextValue);

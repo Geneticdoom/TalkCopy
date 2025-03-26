@@ -34,7 +34,7 @@ internal class SettingsWindow : TalkWindow
 
         if (ImGui.CollapsingHeader("Normal Mode Settings"))
         {
-            if (!PluginHandlers.Plugin.Config.CopyAnyText) ImGui.BeginDisabled();
+            ImGui.BeginDisabled(!PluginHandlers.Plugin.Config.CopyAnyText);
 
             if (ImGui.Checkbox("Try Copy Lists?", ref PluginHandlers.Plugin.Config.TryCopyLists))
                 PluginHandlers.Plugin.Config.Save();
