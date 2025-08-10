@@ -1,5 +1,5 @@
 using Dalamud.Interface.Windowing;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using TalkCopy.Core.Handlers;
 using TalkCopy.Windows.Attributes;
 using TalkCopy.Windows.Interfaces;

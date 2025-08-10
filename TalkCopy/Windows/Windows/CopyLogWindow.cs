@@ -1,6 +1,4 @@
-using Dalamud.Utility;
-using ImGuiNET;
-using System;
+using Dalamud.Bindings.ImGui;
 using System.Globalization;
 using System.Numerics;
 using TalkCopy.Attributes;

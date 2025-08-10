@@ -1,5 +1,5 @@
 using TalkCopy.Core.Handlers;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using TalkCopy.Windows.Attributes;
 using TalkCopy.Attributes;
 using Dalamud.Game.ClientState.Keys;

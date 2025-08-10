@@ -25,7 +25,7 @@ internal unsafe abstract class TalkHookBase : ITalkHook
     {
         if (TalkCopyPlugin.CurrentMode != PluginMode.Default) return;
 
-        AtkUnitBase* atkUnitBase = (AtkUnitBase*)args.Addon;
+        AtkUnitBase* atkUnitBase = (AtkUnitBase*)args.Addon.Address;
         if (atkUnitBase == null) return;
 
         ID = atkUnitBase->Id;

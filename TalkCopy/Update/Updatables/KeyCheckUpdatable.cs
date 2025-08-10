@@ -1,6 +1,6 @@
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Plugin.Services;
-using ImGuizmoNET;
+using Dalamud.Bindings.ImGuizmo;
 using TalkCopy.Attributes;
 using TalkCopy.Core.Handlers;
 

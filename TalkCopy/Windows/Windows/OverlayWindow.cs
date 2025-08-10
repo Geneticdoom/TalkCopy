@@ -2,12 +2,11 @@ using Dalamud.Game.ClientState.Keys;
 using Dalamud.Interface.Utility;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using System.Numerics;
 using TalkCopy.Attributes;
 using TalkCopy.Copying;
 using TalkCopy.Core.Handlers;
-using TalkCopy.Core.Hooking;
 using TalkCopy.TalkHooks.Base;
 
 namespace TalkCopy.Windows.Windows;

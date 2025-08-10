@@ -46,7 +46,7 @@ internal unsafe class ListElementHook
     {
         lastAddon = args.AddonName;
 
-        AtkUnitBase* atkUnitBase = (AtkUnitBase*)args.Addon;
+        AtkUnitBase* atkUnitBase = (AtkUnitBase*)args.Addon.Address;
         if (atkUnitBase == null) return;
 
         PluginHandlers.Utils.FindNodeOfType(1000 + (int)ComponentType.List, (addon) => OnFindList((AtkResNode*)addon), false, atkUnitBase->RootNode, true);

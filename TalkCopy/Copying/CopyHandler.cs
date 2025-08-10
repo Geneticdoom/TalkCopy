@@ -1,7 +1,7 @@
-using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using TalkCopy.Core.Handlers;
+using Dalamud.Bindings.ImGui;
 
 namespace TalkCopy.Copying;
 
