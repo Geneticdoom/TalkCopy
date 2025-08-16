@@ -5,6 +5,7 @@ using TalkCopy.Attributes;
 using Dalamud.Game.ClientState.Keys;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace TalkCopy.Windows.Windows;
 
@@ -30,6 +31,68 @@ internal class SettingsWindow : TalkWindow
 
             if (ImGui.Checkbox("Copy ANY Text", ref PluginHandlers.Plugin.Config.CopyAnyText))
                 PluginHandlers.Plugin.Config.Save();
+        }
+
+        if (ImGui.CollapsingHeader("Output Settings"))
+        {
+            bool useWebSocket = PluginHandlers.Plugin.Config.UseWebSocket;
+            if (ImGui.Checkbox("Use WebSocket Server (instead of clipboard)", ref useWebSocket))
+            {
+                PluginHandlers.Plugin.Config.UseWebSocket = useWebSocket;
+                PluginHandlers.Plugin.Config.Save();
+                
+                // Handle WebSocket server lifecycle
+                if (useWebSocket)
+                {
+                    if (PluginHandlers.Plugin.WebSocketServer == null)
+                    {
+                        _ = Task.Run(async () => await PluginHandlers.Plugin.InitializeWebSocketServer());
+                    }
+                }
+                else
+                {
+                    PluginHandlers.Plugin.WebSocketServer?.Dispose();
+                    PluginHandlers.Plugin.SetWebSocketServer(null);
+                }
+            }
+
+            if (useWebSocket)
+            {
+                ImGui.Indent();
+                
+                int port = PluginHandlers.Plugin.Config.WebSocketPort;
+                if (ImGui.InputInt("WebSocket Port", ref port))
+                {
+                    if (port > 0 && port <= 65535)
+                    {
+                        PluginHandlers.Plugin.Config.WebSocketPort = port;
+                        PluginHandlers.Plugin.Config.Save();
+                        
+                        // Restart WebSocket server with new port
+                        PluginHandlers.Plugin.WebSocketServer?.Dispose();
+                        _ = Task.Run(async () => await PluginHandlers.Plugin.InitializeWebSocketServer());
+                    }
+                }
+                
+                if (port <= 0 || port > 65535)
+                {
+                    ImGui.TextColored(new System.Numerics.Vector4(1, 0, 0, 1), "Port must be between 1 and 65535");
+                }
+                
+                // Show WebSocket server status
+                bool isRunning = PluginHandlers.Plugin.WebSocketServer?.IsRunning ?? false;
+                string statusText = isRunning ? "Running" : "Stopped";
+                var statusColor = isRunning ? new System.Numerics.Vector4(0, 1, 0, 1) : new System.Numerics.Vector4(1, 0, 0, 1);
+                ImGui.TextColored(statusColor, $"WebSocket Server Status: {statusText}");
+                
+                if (isRunning)
+                {
+                    ImGui.Text($"Server URL: ws://localhost:{port}");
+                    ImGui.Text("Connect to this URL with a WebSocket client to receive text data");
+                }
+                
+                ImGui.Unindent();
+            }
         }
 
         if (ImGui.CollapsingHeader("Normal Mode Settings"))

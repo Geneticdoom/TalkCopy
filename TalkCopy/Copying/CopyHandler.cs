@@ -15,7 +15,20 @@ internal static class CopyHandler
         PluginHandlers.PluginLog.Verbose("Addon: " + Addon + " wants to copy the text: " + Text);
         CopyData.Add(new CopyData(DateTime.Now, Addon, Text, Block));
         if (CopyData.Count > 100) CopyData.RemoveAt(0);
-        if(!Block) ImGui.SetClipboardText(Text);
+        
+        if (!Block)
+        {
+            if (PluginHandlers.Plugin.Config.UseWebSocket)
+            {
+                // Send via WebSocket
+                PluginHandlers.Plugin.WebSocketServer?.SendTextAsync(Text);
+            }
+            else
+            {
+                // Use clipboard (original behavior)
+                ImGui.SetClipboardText(Text);
+            }
+        }
     }
 }
 

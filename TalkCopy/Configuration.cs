@@ -30,5 +30,9 @@ internal class Configuration : IPluginConfiguration
     public bool CopyAnyText = true;
     public bool hour24 = true;
 
+    // WebSocket settings
+    public bool UseWebSocket = false;
+    public int WebSocketPort = 8766;
+
     public void Save() => PluginHandlers.PluginInterface.SavePluginConfig(this);
 }

@@ -50,7 +50,16 @@ internal class CopyLogWindow : TalkWindow
             ImGui.TableSetColumnIndex(4);
             if (ImGui.Button($"Copy Again##{i}"))
             {
-                ImGui.SetClipboardText(data.Text);
+                if (PluginHandlers.Plugin.Config.UseWebSocket)
+                {
+                    // Send via WebSocket
+                    PluginHandlers.Plugin.WebSocketServer?.SendTextAsync(data.Text);
+                }
+                else
+                {
+                    // Use clipboard (original behavior)
+                    ImGui.SetClipboardText(data.Text);
+                }
             }
         }
         ImGui.EndTable();
