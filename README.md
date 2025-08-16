@@ -5,8 +5,6 @@ A plugin to send various in game dialogue boxes to the clipboard or websocket. U
 #### WebSocket Configuration
 - **Port**: Default is 8766, configurable in settings
 - **URL**: `ws://localhost:8766` (or your configured port)
-- **Protocol**: Standard WebSocket protocol
-- **Data Format**: Plain text messages
 
 #### Testing WebSocket Mode
 1. Enable WebSocket mode in the plugin settings
