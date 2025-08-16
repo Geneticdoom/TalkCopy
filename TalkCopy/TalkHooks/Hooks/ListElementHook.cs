@@ -1,20 +1,19 @@
 using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
-using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using System.Collections.Generic;
-using TalkCopy.Attributes;
-using TalkCopy.Copying;
+using Lumina.Text.ReadOnly;
 using TalkCopy.Core.Handlers;
+using TalkCopy.Core.Hooking;
 using TalkCopy.TalkHooks.Base;
+using TalkCopy.Attributes;
 using static FFXIVClientStructs.FFXIV.Component.GUI.AtkComponentList;
+using System.Collections.Generic;
 
 namespace TalkCopy.TalkHooks.Hooks;
 
-// wtf is this class?????????????????? I write spaghetti c:
 [Active]
-internal unsafe class ListElementHook
+internal unsafe class ListElementHook : TalkHookBase
 {
     string[] allowed =
     [
@@ -25,7 +24,7 @@ internal unsafe class ListElementHook
         "SelectString",
     ];
 
-    public ListElementHook()
+    public ListElementHook() : base("ListElement")
     {
         foreach (string addon in allowed)
         {
@@ -68,10 +67,10 @@ internal unsafe class ListElementHook
         for (int i = 0; i < listLength; i++)
         {
             ListItem listItem = list->ItemRendererList[i];
-            SeString seString = SeString.Parse((byte*)listItem.Label);
-            if (seString.Payloads.Count != 0)
+            var seString = new ReadOnlySeStringSpan((byte*)listItem.Label).ExtractText();
+            if (!string.IsNullOrWhiteSpace(seString))
             {
-                strings.Add(seString.TextValue);
+                strings.Add(seString);
             }
             else
             {
@@ -94,5 +93,16 @@ internal unsafe class ListElementHook
 
             CopyHandler.CopyTextToClipboard(lastAddon, lastString, !PluginHandlers.Plugin.Config.TryCopyLists);
         }
+    }
+
+    public override void OnPreUpdate(BaseNode baseNode)
+    {
+        // This method is required by the base class but not used for list elements
+        // List elements are handled by the OnPostSetup method instead
+    }
+
+    public override bool CanCopy()
+    {
+        return PluginHandlers.Plugin.Config.TryCopyLists;
     }
 }

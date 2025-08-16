@@ -32,7 +32,8 @@ internal class Configuration : IPluginConfiguration
 
     // WebSocket settings
     public bool UseWebSocket = false;
-    public int WebSocketPort = 8766;
+    public string WebSocketAddress = "localhost";
+    public int WebSocketPort = 49152; // Changed to safe dynamic/ephemeral port range
 
     public void Save() => PluginHandlers.PluginInterface.SavePluginConfig(this);
 }

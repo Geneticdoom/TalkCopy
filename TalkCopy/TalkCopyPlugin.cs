@@ -32,7 +32,7 @@ public sealed class TalkCopyPlugin : IDalamudPlugin
     public async Task InitializeWebSocketServer()
     {
         WebSocketServer = new WebSocketServer();
-        await WebSocketServer.StartAsync(Config.WebSocketPort);
+        await WebSocketServer.StartAsync(Config.WebSocketAddress, Config.WebSocketPort);
     }
 
     internal void SetWebSocketServer(WebSocketServer? server)

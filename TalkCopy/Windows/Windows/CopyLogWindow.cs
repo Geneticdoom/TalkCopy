@@ -1,18 +1,16 @@
-using Dalamud.Bindings.ImGui;
-using System.Globalization;
-using System.Numerics;
-using TalkCopy.Attributes;
-using TalkCopy.Copying;
 using TalkCopy.Core.Handlers;
+using Dalamud.Bindings.ImGui;
 using TalkCopy.Windows.Attributes;
+using TalkCopy.Attributes;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace TalkCopy.Windows.Windows;
 
 [Active]
-[MainWindow]
 internal class CopyLogWindow : TalkWindow
 {
-
     public CopyLogWindow() : base("Talk Copy Log")
     {
         SizeCondition = ImGuiCond.FirstUseEver;
@@ -24,44 +22,92 @@ internal class CopyLogWindow : TalkWindow
 
     public override void Draw()
     {
-        if (ImGui.Checkbox("24 Hour Time?", ref PluginHandlers.Plugin.Config.hour24))
-            PluginHandlers.Plugin.Config.Save();
+        if (ImGui.Button("Clear Log"))
+        {
+            CopyHandler.CopyData.Clear();
+        }
 
-        ImGui.BeginTable("##CopyLogTable", 5, ImGuiTableFlags.ScrollY | ImGuiTableFlags.SizingFixedFit | ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable | ImGuiTableFlags.RowBg, ImGui.GetContentRegionAvail());
+        ImGui.SameLine();
 
-        for (int i = CopyHandler.CopyData.Count - 1; i >= 0; i--) { 
-            CopyData data = CopyHandler.CopyData[i];
-            ImGui.TableNextRow();
-            if (data.Blocked) ImGui.TableSetBgColor(ImGuiTableBgTarget.RowBg0, ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 0, 0, 1)));
-            ImGui.TableSetColumnIndex(0);
-            if (PluginHandlers.Plugin.Config.hour24)
+        if (ImGui.Button("Copy All"))
+        {
+            var allText = string.Join("\n", CopyHandler.CopyData.Select(x => x.Text));
+            if (PluginHandlers.Plugin.Config.UseWebSocket)
             {
-                ImGui.Text(data.MessageTimestamp.ToString("HH:mm:ss", CultureInfo.InvariantCulture));
+                // Send via WebSocket with failsafe
+                _ = Task.Run(async () => await SendTextViaWebSocketWithFailsafe(allText));
             }
-            else {
-                ImGui.Text(data.MessageTimestamp.ToString("hh:mm:ss tt", CultureInfo.InvariantCulture));
+            else
+            {
+                ImGui.SetClipboardText(allText);
             }
-            ImGui.TableSetColumnIndex(1);
-            ImGui.Text(data.Addon);
-            ImGui.TableSetColumnIndex(2);
-            ImGui.Text(data.Text);
-            ImGui.TableSetColumnIndex(3);
-            ImGui.Text(data.Blocked.ToString());
-            ImGui.TableSetColumnIndex(4);
+        }
+
+        ImGui.Separator();
+
+        for (int i = CopyHandler.CopyData.Count - 1; i >= 0; i--)
+        {
+            var data = CopyHandler.CopyData[i];
+            var timeString = data.MessageTimestamp.ToString(PluginHandlers.Plugin.Config.hour24 ? "HH:mm:ss" : "hh:mm:ss tt");
+            
+            ImGui.Text($"[{timeString}] {data.Addon}: {data.Text}");
+            
+            ImGui.SameLine();
+            
             if (ImGui.Button($"Copy Again##{i}"))
             {
                 if (PluginHandlers.Plugin.Config.UseWebSocket)
                 {
-                    // Send via WebSocket
-                    PluginHandlers.Plugin.WebSocketServer?.SendTextAsync(data.Text);
+                    // Send via WebSocket with failsafe
+                    _ = Task.Run(async () => await SendTextViaWebSocketWithFailsafe(data.Text));
                 }
                 else
                 {
-                    // Use clipboard (original behavior)
                     ImGui.SetClipboardText(data.Text);
                 }
             }
         }
-        ImGui.EndTable();
+    }
+
+    private static async Task SendTextViaWebSocketWithFailsafe(string text)
+    {
+        try
+        {
+            var webSocketServer = PluginHandlers.Plugin.WebSocketServer;
+            if (webSocketServer == null)
+            {
+                PluginHandlers.PluginLog.Warning("WebSocket server is null, attempting to initialize...");
+                await PluginHandlers.Plugin.InitializeWebSocketServer();
+                webSocketServer = PluginHandlers.Plugin.WebSocketServer;
+            }
+
+            if (webSocketServer != null)
+            {
+                // Ensure the server is actually running
+                if (!webSocketServer.IsRunning)
+                {
+                    PluginHandlers.PluginLog.Warning("WebSocket server is not running, attempting to restart...");
+                    var success = await webSocketServer.EnsureRunningAsync();
+                    if (!success)
+                    {
+                        PluginHandlers.PluginLog.Error("Failed to restart WebSocket server, falling back to clipboard");
+                        ImGui.SetClipboardText(text);
+                        return;
+                    }
+                }
+
+                await webSocketServer.SendTextAsync(text);
+            }
+            else
+            {
+                PluginHandlers.PluginLog.Error("Failed to initialize WebSocket server, falling back to clipboard");
+                ImGui.SetClipboardText(text);
+            }
+        }
+        catch (Exception ex)
+        {
+            PluginHandlers.PluginLog.Error($"Error sending text via WebSocket: {ex.Message}, falling back to clipboard");
+            ImGui.SetClipboardText(text);
+        }
     }
 }

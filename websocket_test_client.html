@@ -60,8 +60,8 @@
         .controls {
             margin: 20px 0;
         }
-        input[type="number"] {
-            width: 100px;
+        input[type="text"], input[type="number"] {
+            width: 150px;
             padding: 5px;
             margin-right: 10px;
         }
@@ -84,6 +84,14 @@
             background-color: #6c757d;
             color: white;
         }
+        .input-group {
+            margin: 10px 0;
+        }
+        .input-group label {
+            display: inline-block;
+            width: 120px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -91,8 +99,16 @@
         <h1>TalkCopy WebSocket Test Client</h1>
         
         <div class="controls">
-            <label for="port">Port:</label>
-            <input type="number" id="port" value="8766" min="1" max="65535">
+            <div class="input-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" value="localhost" placeholder="localhost or IP address">
+            </div>
+            
+            <div class="input-group">
+                <label for="port">Port:</label>
+                <input type="number" id="port" value="49152" min="1" max="65535" placeholder="49152">
+                <small>Safe range: 49152-65535 (dynamic/ephemeral ports)</small>
+            </div>
             <button class="connect-btn" onclick="connect()">Connect</button>
             <button class="disconnect-btn" onclick="disconnect()">Disconnect</button>
             <button class="clear-btn" onclick="clearMessages()">Clear Messages</button>
@@ -135,7 +151,14 @@
                 return;
             }
 
+            const address = document.getElementById('address').value.trim();
             const port = document.getElementById('port').value;
+            
+            if (!address) {
+                alert('Please enter a valid address');
+                return;
+            }
+            
             if (!port || port < 1 || port > 65535) {
                 alert('Please enter a valid port number (1-65535)');
                 return;
@@ -143,7 +166,7 @@
 
             try {
                 updateStatus('Connecting...', 'connecting');
-                socket = new WebSocket(`ws://localhost:${port}`);
+                socket = new WebSocket(`ws://${address}:${port}`);
 
                 socket.onopen = function(event) {
                     updateStatus('Connected', 'connected');

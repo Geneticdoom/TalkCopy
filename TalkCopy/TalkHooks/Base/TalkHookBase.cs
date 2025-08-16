@@ -6,7 +6,6 @@ using Lumina.Text.ReadOnly;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using TalkCopy.Copying;
 using TalkCopy.Core.Handlers;
 using TalkCopy.Core.Hooking;
 using TalkCopy.TalkHooks.Interfaces;
